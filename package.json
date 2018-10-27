@@ -1,0 +1,19 @@
+{
+  "name": "dominoonline",
+  "version": "1.0.0",
+  "description": "Backend + frontend plataforma de jogos online (implementando dominó).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dusiromulo/DominoOnline.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dusiromulo/DominoOnline/issues"
+  },
+  "homepage": "https://github.com/dusiromulo/DominoOnline#readme"
+}
