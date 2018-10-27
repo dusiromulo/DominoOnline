@@ -4,7 +4,8 @@
   "description": "Backend + frontend plataforma de jogos online (implementando dominó).",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"cd backend && node index.js\" \"cd frontend && npm start\""
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/dusiromulo/DominoOnline/issues"
   },
-  "homepage": "https://github.com/dusiromulo/DominoOnline#readme"
+  "homepage": "https://github.com/dusiromulo/DominoOnline#readme",
+  "dependencies": {
+    "concurrently": "^4.0.1"
+  }
 }
