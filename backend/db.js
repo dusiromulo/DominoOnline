@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 module.exports = (cbSucc) => {
-	const dbRoute = "mongodb://localhost:27017";
+	const dbRoute = "mongodb://localhost:27017/domino";
 
 	mongoose.connect(
 	  dbRoute,

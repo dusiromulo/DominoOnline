@@ -7,7 +7,7 @@ class Chat extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {msgLst : []};
-		this.appendMessageElement = this.appendMessageElement.bind(this);
+		this.appendMessage = this.appendMessage.bind(this);
 	}
 
 	formatMessage(model) {
@@ -16,15 +16,15 @@ class Chat extends Component {
 		return (<li>[{date}]: {model.string}</li>);
 	}
 
-	appendMessageElement(model) {
+	appendMessage(model) {
 		this.setState({
 			msgLst : this.state.msgLst.concat(this.formatMessage(model))
 		});
 	}
 
-	setMessageList(list) {
+	setMessageList(models) {
 		this.setState({
-			msgLst : list.map(this.formatMessage)
+			msgLst : models.map(this.formatMessage)
 		});
 	}
 
@@ -35,7 +35,7 @@ class Chat extends Component {
 		})
 		.then(data => {
 			this.setMessageList(data);
-			subscribeMsgs(this.appendMessageElement);
+			subscribeMsgs(this.appendMessage);
 		});		
 	}
 
