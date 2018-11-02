@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { subscribeMsgs, sendMsg } from './socket';
 import dateFormat from 'dateformat';
 import './chat.css';
+import {sendMessage, getMessages} from './serverService';
 
 class Chat extends Component {
 	constructor(props) {
@@ -29,18 +30,16 @@ class Chat extends Component {
 	}
 
 	componentDidMount() {
-		fetch('http://localhost:8000/message')
-		.then(res => {
-			return res.json()
-		})
+		getMessages()
 		.then(data => {
 			this.setMessageList(data);
 			subscribeMsgs(this.appendMessage);
-		});		
+		});
 	}
 
 	handleSubmit(e) {
-		sendMsg(this.input.value);
+		sendMessage(this.input.value);
+		// sendMsg(this.input.value);
 		this.input.value = '';
 		e.preventDefault();
 	}

@@ -1,28 +1,18 @@
 import React, { Component } from 'react';
+import {signup} from './serverService';
 
 class Signup extends Component {
   
 	handleSubmit(e) {
 		e.preventDefault();
 
-		fetch('http://localhost:8000/signup', 
-			{ method: 'post'
-			, headers: {'Content-Type':'application/json'}
-			, body: 
-				JSON.stringify(
-				{ "name": this.username.value
-				, "email": this.email.value
-				, "password": this.password.value })
-		})		
-		.then(res => {
-			return res.json();
-		})	
+		signup(this.username.value, this.email.value, this.password.value)
 		.then(data => {
 			if(data.error)
 				alert("ERROR: " + data.error);
 			else
 				alert("Criado com sucesso!");
-		});		
+		});
 	}
 
 	render() {

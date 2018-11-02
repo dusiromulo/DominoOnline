@@ -1,28 +1,19 @@
 import React, { Component } from 'react';
+import {signin} from './serverService';
 
 class Signin extends Component {
   
 	handleSubmit(e) {
 		e.preventDefault();
 
-		fetch('http://localhost:8000/signin', 
-			{ method: 'post'
-			, headers: {'Content-Type':'application/json'}
-			, body: 
-				JSON.stringify(
-				{ "email": this.email.value
-				, "password": this.password.value })
-		})		
-		.then(res => {
-			return res.json();
-		})	
+		signin(this.email.value, this.password.value)
 		.then(data => {
 			console.log(data);
 			if(data.error)
 				alert("ERROR: " + data.error);
 			else
 				alert("Login com sucesso!");
-		});		
+		});
 	}
 
 	render() {
