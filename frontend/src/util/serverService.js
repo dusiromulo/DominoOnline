@@ -14,7 +14,7 @@ function makeFetch(url, method, body, token) {
         data.headers['authorization'] = `Bearer ${token}`;
     }
 
-	return fetch(`http://localhost:8000/${url}`, data)		
+	return fetch(`http://192.168.0.109:8000/${url}`, data)		
 	.then(res => {
 		return res.json();
 	});
@@ -25,11 +25,11 @@ export function setUserToken(token) {
 }
 
 export function sendMessage(msg) {
-	return makeFetch('message', 'post', {'message': msg});
+	return makeFetch('message', 'post', {'message': msg}, userToken);
 }
 
-export function getMessages() {
-	return makeFetch('message', 'get');
+export function getMessages(token) {
+	return makeFetch('message', 'get', null, userToken);
 }
 
 export function signin(email, password) {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {signin} from '../util/serverService';
+import {signin, setUserToken} from '../util/serverService';
+import '../css/form.css';
 
 class Signin extends Component {
 	handleSubmit(e) {
@@ -10,7 +11,8 @@ class Signin extends Component {
 			if(data.error)
 				alert("ERROR: " + data.error);
 			else {
-                sessionStorage.setItem("jwtToken", data.token);
+				setUserToken(data.token);
+                localStorage.setItem("jwtToken", data.token);
 				alert("Login com sucesso!");
 				this.props.onLogin();
 			}
@@ -20,12 +22,12 @@ class Signin extends Component {
 	render() {
 		return (
 			<div>
-				<form onSubmit={e => this.handleSubmit(e)}>
+				<form className={'center-form'} onSubmit={e => this.handleSubmit(e)}>
 					<input ref={e => this.email = e} type={'email'} placeholder={'Email'}/>
 					<input ref={e => this.password = e} autoComplete={'off'} type={'password'} placeholder={'Password'}/>
 					<button>Entrar</button>
 				</form>
-				<button onClick = {this.props.onClick}>Registrar</button>
+				<button className={'top-right green-bg'} onClick = {this.props.onClick}>Registrar</button>
 			</div>
 		);
 	}

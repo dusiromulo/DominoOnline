@@ -1,5 +1,5 @@
 import openSocket from 'socket.io-client';
-const socket = openSocket('http://localhost:8000');
+const socket = openSocket('http://192.168.0.109:8000');
 
 function subscribeMsgs(cb) {
 	socket.on('message', cb);

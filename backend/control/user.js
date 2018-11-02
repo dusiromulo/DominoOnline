@@ -26,7 +26,7 @@ getCleanUser = (user) => {
 };
 
 module.exports = {
-	create : (req, res, next) => {
+	create: (req, res, next) => {
 		console.log("Create:", req.body);
 		const user = new User(
 			{ name: req.body.name
@@ -43,7 +43,7 @@ module.exports = {
 		});
 	},
 
-	authenticate : (req, res, next) => {
+	authenticate: (req, res, next) => {
 		console.log("Authenticate:", req.body);
 		User.authenticate(req.body.email, req.body.password, 
 			(err, user) => {
@@ -57,7 +57,7 @@ module.exports = {
 		);
 	},
 
-	profile : (req, res, next) => {
+	profile: (req, res, next) => {
         console.log("Profile:", req.body.token);
         const token = req.body.token || req.query.token;
         if (!token) {
@@ -86,5 +86,6 @@ module.exports = {
                 });
             });
         });
-	}
+	},
+	jwtSecret
 };
