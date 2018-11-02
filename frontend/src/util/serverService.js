@@ -1,17 +1,27 @@
-function makeFetch(url, method, body) {
+let userToken;
+
+function makeFetch(url, method, body, token) {
 	let data = {
 		method: method,
 		headers: {'Content-Type':'application/json'}
 	};
 
-	if (body) {
+    if (body) {
 		data.body = JSON.stringify(body);
 	}
+	
+	if (token) {
+        data.headers['authorization'] = `Bearer ${token}`;
+    }
 
 	return fetch(`http://localhost:8000/${url}`, data)		
 	.then(res => {
 		return res.json();
 	});
+}
+
+export function setUserToken(token) {
+	userToken = token;
 }
 
 export function sendMessage(msg) {
@@ -36,5 +46,9 @@ export function signup(name, email, password) {
 		'email': email, 
 		'password': password 
 	};
-	return makeFetch('signin', 'post', body);
+	return makeFetch('signup', 'post', body);
+}
+
+export function profile() {
+    return makeFetch('profile', 'post', {token: userToken});
 }

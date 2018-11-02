@@ -8,9 +8,9 @@ module.exports = (socket, io) => {
 	});
 	
 	socket.on('message', function(msg){
-		var messageSchema = new Message({string : msg});
-		messageSchema.save().then(msgModel => { 
-			io.emit('message', msgModel);
-		});
-	});
+        var messageSchema = new Message({string : msg});
+        messageSchema.save().then(msgModel => {
+            io.emit('message', msgModel);
+        });
+    });
 };

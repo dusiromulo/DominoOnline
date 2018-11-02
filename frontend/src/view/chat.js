@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { subscribeMsgs, sendMsg } from './socket';
+import { subscribeMsgs } from '../util/socket';
 import dateFormat from 'dateformat';
-import './chat.css';
-import {sendMessage, getMessages} from './serverService';
+// import '../css/chat.css';
+import {sendMessage, getMessages} from '../util/serverService';
 
 class Chat extends Component {
 	constructor(props) {
@@ -40,6 +40,10 @@ class Chat extends Component {
 	handleSubmit(e) {
 		sendMessage(this.input.value);
 		// sendMsg(this.input.value);
+
+		// const msg = `${this.props.user.name}: ${this.input.value}`;
+		// sendMsg(msg);
+
 		this.input.value = '';
 		e.preventDefault();
 	}

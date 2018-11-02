@@ -5,4 +5,5 @@ module.exports = app => {
 	app.get("/message", MessageControl.getMsgs);
 	app.post("/signup", UserControl.create);
 	app.post("/signin", UserControl.authenticate);
+	app.post("/profile", UserControl.profile);
 }
