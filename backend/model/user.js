@@ -24,23 +24,23 @@ UserSchema.pre('save', function (next) {
 
 //authenticate input against database
 UserSchema.statics.authenticate = function (email, password, cb) {
-	User.findOne({ email: email })
-	.exec(function (err, user) {
-		if (err) {
-			return cb(err);
-		} else if (!user) {
-			var err = new Error('Invalid user.');
-			err.status = 401;
-			return cb(err);
-		}
-		if(bcrypt.compareSync(password, user.password))
-			return cb(null, user);
-		else {
-			var err = new Error('Invalid password.');
-			err.status = 401;
-			return cb(err);
-		}
-	});
-}
+    User.findOne({ email: email })
+    .exec(function (err, user) {
+        if (err) {
+            return cb(err);
+        } else if (!user) {
+            const err = new Error('Invalid user.');
+            err.status = 401;
+            return cb(err);
+        }
+        if(bcrypt.compareSync(password, user.password))
+            return cb(null, user);
+        else {
+            const err = new Error('Invalid password.');
+            err.status = 401;
+            return cb(err);
+        }
+    });
+};
 
 module.exports = mongoose.model("User", UserSchema);
