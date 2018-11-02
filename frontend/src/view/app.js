@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import Loader from 'react-loader-spinner';
+import '../css/app.css';
+
 import Chat from './chat';
 import Signup from './signup';
 import Signin from './signin';
-import '../css/app.css';
 import {profile} from '../util/serverService';
 
 class App extends Component {

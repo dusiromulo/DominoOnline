@@ -27,7 +27,7 @@ getCleanUser = (user) => {
 
 module.exports = {
 	create: (req, res, next) => {
-		console.log("Create:", req.body);
+		// console.log("Create:", req.body);
 		const user = new User(
 			{ name: req.body.name
 			, email: req.body.email
@@ -44,7 +44,7 @@ module.exports = {
 	},
 
 	authenticate: (req, res, next) => {
-		console.log("Authenticate:", req.body);
+		// console.log("Authenticate:", req.body);
 		User.authenticate(req.body.email, req.body.password, 
 			(err, user) => {
 				if(err)
@@ -58,7 +58,7 @@ module.exports = {
 	},
 
 	profile: (req, res, next) => {
-        console.log("Profile:", req.body.token);
+        // console.log("Profile:", req.body.token);
         const token = req.body.token || req.query.token;
         if (!token) {
             return res.status(401).json({message: "Must pass token"});

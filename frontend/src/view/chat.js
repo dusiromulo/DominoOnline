@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
-import { subscribeMsgs } from '../util/socket';
+import * as Scroll from 'react-scroll';
 import dateFormat from 'dateformat';
-import '../css/chat.css';
+
+import { subscribeMsgs } from '../util/socket';
 import {sendMessage, getMessages} from '../util/serverService';
+
+import '../css/chat.css';
+
+// let scroller = Scroll.scroller;
+let scroll = Scroll.animateScroll;
+
 
 class Chat extends Component {
 	constructor(props) {
@@ -38,6 +45,10 @@ class Chat extends Component {
 		});
 	}
 
+	componentDidUpdate() {
+		scroll.scrollToBottom({containerId : 'messages'});
+	}
+
 	logout = () => {
 		localStorage.removeItem("jwtToken");
 		this.props.onLogout();
@@ -53,7 +64,7 @@ class Chat extends Component {
 		return (
 			<div>
 				<button className={'logout'} onClick={this.logout}>Logout</button>
-				<ul>{this.state.msgLst}</ul>
+				<ul id="messages">{this.state.msgLst}</ul>
 				<form className={'create-msg'} onSubmit={e => this.handleSubmit(e)}>
 					<input ref={e => this.input = e} autoComplete={'off'} /><button>Send</button>
 				</form>

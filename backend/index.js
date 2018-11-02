@@ -39,7 +39,6 @@ const conn = dbInit(
                             message: 'Please register Log in using a valid email to submit posts'
                         });
                     } else {
-            			console.log("user!!", user);
                         req.user = user; // Seta o usuario na request, assim basta acessar req.user nas rotas
                         next();
                     }
