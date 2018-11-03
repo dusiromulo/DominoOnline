@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import * as Scroll from 'react-scroll';
 import dateFormat from 'dateformat';
 
-import { subscribeMsgs } from '../util/socket';
-import {sendMessage, getMessages} from '../util/serverService';
+import { openSocketConnection, closeSocketConnection, subscribeMsgs } from '../util/socket';
+import { sendMessage, getMessages } from '../util/serverService';
 
 import '../css/chat.css';
 
@@ -16,6 +16,7 @@ class Chat extends Component {
 		super(props);
 		this.state = {msgLst : []};
 		this.appendMessage = this.appendMessage.bind(this);
+		openSocketConnection();
 	}
 
 	formatMessage(model, key) {
@@ -33,7 +34,8 @@ class Chat extends Component {
 	setMessageList(models) {
 		this.setState({
 			msgLst : models.map((it) => this.formatMessage(it, models.indexOf(it)))
-		});
+		},
+		() => { scroll.scrollToBottom({containerId : 'messages'}); });
 	}
 
 	componentDidMount() {
@@ -50,6 +52,7 @@ class Chat extends Component {
 	}
 
 	logout = () => {
+		closeSocketConnection();
 		localStorage.removeItem("jwtToken");
 		this.props.onLogout();
 	}

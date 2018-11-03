@@ -1,12 +1,28 @@
 import openSocket from 'socket.io-client';
-const socket = openSocket('http://192.168.0.109:8000');
+let socket;
+
+function openSocketConnection() {
+	socket = openSocket('http://192.168.0.109:8000');
+}
+
+function closeSocketConnection() {
+	socket.close();
+}
 
 function subscribeMsgs(cb) {
-	socket.on('message', cb);
+	if (socket && socket.connected) {
+		socket.on('message', cb);
+		return;
+	}
+	console.log("Error! Socket not opened");
 } 
 
 function sendMsg(msg) {
-	socket.emit('message', msg);
+	if (socket && socket.connected) {
+		socket.emit('message', msg);
+		return;
+	}
+	console.log("Error! Socket not opened");
 }
 
-export { subscribeMsgs, sendMsg }
+export { openSocketConnection, closeSocketConnection, subscribeMsgs, sendMsg }
