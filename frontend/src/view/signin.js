@@ -21,13 +21,13 @@ class Signin extends Component {
 
 	render() {
 		return (
-			<div>
+			<div className='center-vertical'>
 				<form className={'center-form'} onSubmit={e => this.handleSubmit(e)}>
 					<input ref={e => this.email = e} type={'email'} placeholder={'Email'}/>
 					<input ref={e => this.password = e} autoComplete={'off'} type={'password'} placeholder={'Password'}/>
 					<button>Entrar</button>
 				</form>
-				<button className={'top-right green-bg'} onClick = {this.props.onClick}>Registrar</button>
+				<button className='top-right green-bg' onClick={this.props.onClick}>Registrar</button>
 			</div>
 		);
 	}

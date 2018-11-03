@@ -21,7 +21,7 @@ class Signup extends Component {
 
 	render() {
 		return (
-			<div>
+			<div className='center-vertical'>
 				<form className={'center-form'} onSubmit={e => this.handleSubmit(e)}>
 					<input ref={e => this.username = e} type={'text'} placeholder={'Username'}/>
 					<input ref={e => this.email = e} type={'email'} placeholder={'Email'}/>
