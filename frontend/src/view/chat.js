@@ -21,7 +21,7 @@ class Chat extends Component {
 	formatMessage(model, key) {
 		const formatStr = 'dd/mm/yyyy HH:MM:ss';
 		const date = dateFormat(new Date(model.createdAt), formatStr);
-		return (<li key={key}>[{date}]: {model.string}</li>);
+		return (<li key={key}>[{date}] {model.user.name}: {model.string}</li>);
 	}
 
 	appendMessage(model) {
@@ -47,9 +47,7 @@ class Chat extends Component {
 			subscribeMsgs(this.appendMessage);
 			this.scrollToBottomList();
 		})
-		.catch(err => {
-			console.log("ERRO GET MESSAGES!", err);
-		});
+		.catch(err => { console.log("ERRO GET MESSAGES!", err); });
 	}
 
 	componentDidUpdate() {
@@ -64,11 +62,9 @@ class Chat extends Component {
 
 	handleSubmit(e) {
 		e.preventDefault();
-		sendMessage(this.input.value, this.props.user)
-		.then((data) => { console.log("SEND MESSAGE!", data); this.input.value = ''; })
-		.catch(err => {
-			console.log("ERRO SEND MESSAGE!", err);
-		});
+		sendMessage(this.input.value)
+		.then(data => { this.input.value = ''; })
+		.catch(err => { console.log("ERRO SEND MESSAGE!", err); });
 	}
   
 	render() {
