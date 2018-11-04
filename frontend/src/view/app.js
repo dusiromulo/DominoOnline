@@ -18,7 +18,10 @@ class App extends Component {
 		    profile(this.props.user)
 		    .then((data) => {
                 this.setState({currPage: "chat", currUser: data.user});
-            });
+            })
+			.catch(err => {
+				console.log("ERRO PROFILE!", err);
+			});
 		} else {
 			this.setState({currPage: "signin"});
 		}

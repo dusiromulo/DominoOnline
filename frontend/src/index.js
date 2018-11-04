@@ -5,12 +5,13 @@ import {setUserToken} from './util/serverService';
 import * as serviceWorker from './serviceWorker';
 
 function loadLoggedUser() {
-    let token = localStorage.getItem("jwtToken");
-    if(!token || token === "") {//if there is no token, dont bother
+    let auth = localStorage.getItem("authToken");
+    let refresh = localStorage.getItem("refreshToken");
+    if(!auth || auth === "") {//if there is no token, dont bother
         return <App user={0}/>;
     } else {
-    	setUserToken(token);
-        return <App user={token}/>;
+    	setUserToken(auth, refresh);
+        return <App user={auth}/>;
     }
 }
 

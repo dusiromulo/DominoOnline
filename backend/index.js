@@ -13,7 +13,7 @@ const routesInit = require('./config/routes');
 
 
 // TODO colocar num .env
-const user = require('./control/user');
+const UserControl = require('./control/user');
 const userList = [];
 
 const conn = dbInit(
@@ -32,13 +32,20 @@ const conn = dbInit(
                 if (!token) return next(); // Se nao existe, continua normalmente a execucao
 
                 token = token.replace('Bearer ', '');
-                jwt.verify(token, user.jwtSecret, function(err, user) {
-                    if (err) {
+                UserControl.verifyToken(token, function(err, user) {
+                    if (err && err.name !== 'TokenExpiredError') { // Algum santo tentando hackear
+                    	console.log("HACKER!", err);
                         return res.status(401).json({
                             success: false,
-                            message: 'Please register Log in using a valid email to submit posts'
+                            message: 'hacker'
                         });
-                    } else {
+                    } else if (err) { // Token inválido!
+                    	console.log("TOKEN EXPIRADO!", err);
+                        return res.status(403).json({
+                            success: false,
+                            message: 'token_expired'
+                        });
+                	} else {
                         req.user = user; // Seta o usuario na request, assim basta acessar req.user nas rotas
                         next();
                     }

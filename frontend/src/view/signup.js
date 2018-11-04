@@ -8,14 +8,16 @@ class Signup extends Component {
 
 		signup(this.username.value, this.email.value, this.password.value)
 		.then(data => {
-			if(data.error)
+			if (data.error) {
 				alert("ERROR: " + data.error);
-			else {
-				setUserToken(data.token);
-                localStorage.setItem("jwtToken", data.token);
-				alert("Criado com sucesso!");
+			} else {
+				setUserToken(data.auth, data.refresh);
+				alert(`Usuário criado com sucesso!\n\nBem vindo ${data.user.name}!`);
 				this.props.onRegister();
 			}
+		})
+		.catch(err => {
+			console.log("ERRO SIGNIN!", err);
 		});	
 	}
 

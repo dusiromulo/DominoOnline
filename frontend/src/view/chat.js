@@ -7,7 +7,6 @@ import { sendMessage, getMessages } from '../util/serverService';
 
 import '../css/chat.css';
 
-// let scroller = Scroll.scroller;
 let scroll = Scroll.animateScroll;
 
 
@@ -34,21 +33,27 @@ class Chat extends Component {
 	setMessageList(models) {
 		this.setState({
 			msgLst : models.map((it) => this.formatMessage(it, models.indexOf(it)))
-		},
-		() => { scroll.scrollToBottom({containerId : 'messages'}); });
+		});
+	}
+
+	scrollToBottomList() {
+		scroll.scrollToBottom({containerId : 'messages'});
 	}
 
 	componentDidMount() {
-		getMessages(this.props.user)
+		getMessages()
 		.then(data => {
-			console.log("then(data)", data);
 			this.setMessageList(data);
 			subscribeMsgs(this.appendMessage);
+			this.scrollToBottomList();
+		})
+		.catch(err => {
+			console.log("ERRO GET MESSAGES!", err);
 		});
 	}
 
 	componentDidUpdate() {
-		scroll.scrollToBottom({containerId : 'messages'});
+		this.scrollToBottomList();
 	}
 
 	logout = () => {
@@ -60,7 +65,10 @@ class Chat extends Component {
 	handleSubmit(e) {
 		e.preventDefault();
 		sendMessage(this.input.value, this.props.user)
-		.then(() => { this.input.value = ''; });
+		.then((data) => { console.log("SEND MESSAGE!", data); this.input.value = ''; })
+		.catch(err => {
+			console.log("ERRO SEND MESSAGE!", err);
+		});
 	}
   
 	render() {
@@ -69,7 +77,7 @@ class Chat extends Component {
 				<button className={'logout'} onClick={this.logout}>Logout</button>
 				<ul id="messages">{this.state.msgLst}</ul>
 				<form className={'create-msg'} onSubmit={e => this.handleSubmit(e)}>
-					<input ref={e => this.input = e} autoComplete={'off'} /><button>Send</button>
+					<input ref={e => this.input = e} autoComplete='off' placeholder='Digite sua mensagem' /><button>Send</button>
 				</form>
 			</div>
 		);

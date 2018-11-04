@@ -8,14 +8,16 @@ class Signin extends Component {
 
 		signin(this.email.value, this.password.value)
 		.then(data => {
-			if(data.error)
+			if (data.error) {
 				alert("ERROR: " + data.error);
-			else {
-				setUserToken(data.token);
-                localStorage.setItem("jwtToken", data.token);
-				alert("Login com sucesso!");
+			} else {
+				setUserToken(data.auth, data.refresh);
+				alert(`Login com sucesso!\n\nBem vindo ${data.user.name}!`);
 				this.props.onLogin();
 			}
+		})
+		.catch(err => {
+			console.log("ERRO SIGNIN!", err);
 		});		
 	}
 
