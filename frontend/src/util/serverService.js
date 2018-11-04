@@ -73,6 +73,13 @@ export function setUserToken(auth, refresh) {
     localStorage.setItem("refreshToken", refresh);
 }
 
+export function removeUserToken() {
+	userAuthToken = null;
+	userRefreshToken = null;
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("refreshToken");
+}
+
 export function sendMessage(msg) {
 	return makeFetch('message', 'post', {'message': msg}, userAuthToken);
 }

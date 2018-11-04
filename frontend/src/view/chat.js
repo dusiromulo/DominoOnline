@@ -3,7 +3,7 @@ import * as Scroll from 'react-scroll';
 import dateFormat from 'dateformat';
 
 import { openSocketConnection, closeSocketConnection, subscribeMsgs } from '../util/socket';
-import { sendMessage, getMessages } from '../util/serverService';
+import { sendMessage, getMessages, removeUserToken } from '../util/serverService';
 
 import '../css/chat.css';
 
@@ -57,8 +57,8 @@ class Chat extends Component {
 	}
 
 	logout = () => {
+		removeUserToken();
 		closeSocketConnection();
-		localStorage.removeItem("jwtToken");
 		this.props.onLogout();
 	}
 
