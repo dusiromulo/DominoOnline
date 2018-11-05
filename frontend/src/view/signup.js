@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import { loginUser, openSigninOrSignup } from "../actions/app";
 import {signup, setUserToken} from '../util/serverService';
 import '../css/form.css';
 
@@ -13,7 +16,7 @@ class Signup extends Component {
 			} else {
 				setUserToken(data.auth, data.refresh);
 				alert(`Usuário criado com sucesso!\n\nBem vindo ${data.user.name}!`);
-				this.props.onRegister();
+				this.props.onUserLoginOrRegister(data.user, data.auth, data.refresh);
 			}
 		})
 		.catch(err => {
@@ -24,16 +27,22 @@ class Signup extends Component {
 	render() {
 		return (
 			<div className='center-vertical'>
-				<form className={'center-form'} onSubmit={e => this.handleSubmit(e)}>
-					<input ref={e => this.username = e} type={'text'} placeholder={'Username'}/>
-					<input ref={e => this.email = e} type={'email'} placeholder={'Email'}/>
-					<input ref={e => this.password = e} autoComplete={'off'} type={'password'} placeholder={'Password'}/>
+				<form className='center-form' onSubmit={e => this.handleSubmit(e)}>
+					<input ref={e => this.username = e} type='text' placeholder='Username'/>
+					<input ref={e => this.email = e} type='email' placeholder='Email'/>
+					<input ref={e => this.password = e} autoComplete='off' type='password' placeholder='Password'/>
 					<button>Registrar</button>
 				</form>
-				<button className={'top-right green-bg'} onClick={this.props.onClick}>Entrar</button>
+				<button className='top-right green-bg' onClick={() => this.props.onUserChangePage(true)}>Entrar</button>
 			</div>
 		);
 	}
 }
 
-export default Signup;
+// export default Signup;
+const mapDispatchToProps = dispatch => ({
+	onUserLoginOrRegister: (user, auth, refresh) => dispatch(loginUser(user, auth, refresh)),
+	onUserChangePage: (isSignin) => dispatch(openSigninOrSignup(isSignin))
+});
+
+export default connect(null, mapDispatchToProps)(Signup);

@@ -1,62 +1,42 @@
 import React, { Component } from 'react';
-import Loader from 'react-loader-spinner';
+import { connect } from 'react-redux';
+
 import '../css/app.css';
 
-import Chat from './chat';
-import Signup from './signup';
-import Signin from './signin';
-import {profile} from '../util/serverService';
+import { profile } from '../util/serverService';
+import { loginUser, logoutUser, profileUser, openSigninOrSignup } from "../actions/app";
+
 
 class App extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {currPage: ""};
-	}
-
 	componentDidMount() {
-		if (this.props.user) {
-		    profile(this.props.user)
+		if (this.props.auth) {
+		    profile()
 		    .then((data) => {
-                this.setState({currPage: "chat", currUser: data.user});
+                this.props.onUserProfile(data.user);
             })
 			.catch(err => {
 				console.log("ERRO PROFILE!", err);
 			});
-		} else {
-			this.setState({currPage: "signin"});
+		}  else {
+			this.props.onUserChangePage(true);
 		}
 	}
 
-	onOpenSignup = () => {
-		this.setState({currPage: "signup"});
-	};
-
-	onOpenSignin = () => {
-		this.setState({currPage: "signin"});
-	};
-
-	onOpenChat = () => {
-		this.setState({currPage: "chat"});
-	};
-
-	onLogout = () => {
-		this.setState({currPage: "signin", currUser: {}});
-	};
-
 	render() {
-		let page;
-		if (this.state.currPage === "signin") {
-			page = <Signin onClick={this.onOpenSignup} onLogin={this.onOpenChat}/>;
-		} else if (this.state.currPage === "signup") {
-			page = <Signup onClick={this.onOpenSignin} onRegister={this.onOpenChat}/>;
-		} else if (this.state.currPage === "chat") {
-			page = <Chat user={this.props.user} onLogout={this.onLogout}/>;
-		} else {
-			page = <Loader color="#CCCCCC" height="100"	width="100"/>;
-		}
-
-		return (<div>{page}</div>);	
+		return (<>{this.props.currPage}</>);	
 	}
 }
 
-export default App;
+const mapStateToProps = state => {
+	return {
+		auth: state.app.auth,
+		currPage: state.app.currPage
+	};
+};
+
+const mapDispatchToProps = dispatch => ({
+	onUserProfile: (user) => dispatch(profileUser(user)),
+	onUserChangePage: (isSignin) => dispatch(openSigninOrSignup(isSignin))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

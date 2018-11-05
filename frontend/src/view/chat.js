@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import * as Scroll from 'react-scroll';
 import dateFormat from 'dateformat';
 
+import { logoutUser } from "../actions/app";
 import { openSocketConnection, closeSocketConnection, subscribeMsgs } from '../util/socket';
 import { sendMessage, getMessages, removeUserToken } from '../util/serverService';
 
@@ -57,7 +59,7 @@ class Chat extends Component {
 	logout = () => {
 		removeUserToken();
 		closeSocketConnection();
-		this.props.onLogout();
+		this.props.onUserLogout();
 	}
 
 	handleSubmit(e) {
@@ -80,4 +82,8 @@ class Chat extends Component {
 	}
 }
 
-export default Chat;
+const mapDispatchToProps = dispatch => ({
+	onUserLogout: () => dispatch(logoutUser())
+});
+
+export default connect(null, mapDispatchToProps)(Chat);
