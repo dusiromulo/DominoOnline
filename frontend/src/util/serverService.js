@@ -1,6 +1,6 @@
 let userAuthToken;
 let userRefreshToken;
-const API_URL = 'http://192.168.0.109:8000/';
+const API_URL = 'http://192.168.0.129:8000/';
 
 function refreshToken() {
 	return new Promise((resolve, reject) => {
@@ -35,34 +35,36 @@ function makeFetch(url, method, body, token) {
 
 	return new Promise((resolve, reject) => {
 		fetch(`${API_URL}${url}`, data)
-		.then(res => {
-			if (res.status === 200) {
-				return resolve(res.json());
-			} else {
-				res.json().then(errorData => {
-					if (errorData.message === 'token_expired') {
-						refreshToken()
-						.then(newData => {
-							setUserToken(newData.auth, newData.refresh);
-							if (url === 'profile') {
-								body.token = newData.auth;
-								return resolve(makeFetch(url, method, body));
-							}
-							return resolve(makeFetch(url, method, body, newData.auth));
-						})
-						.catch(err => {
-							console.log("ERRO ATUALIZANDO TOKEN!", err);
-						});
-					} else {
-						return reject(errorData);
-					}
-				});
+		.then(
+			res => {
+				if (res.status === 200) {
+					return resolve(res.json());
+				} else {
+					res.json().then(errorData => {
+						if (errorData.message === 'token_expired') {
+							refreshToken()
+							.then(newData => {
+								setUserToken(newData.auth, newData.refresh);
+								if (url === 'profile') {
+									body.token = newData.auth;
+									return resolve(makeFetch(url, method, body));
+								}
+								return resolve(makeFetch(url, method, body, newData.auth));
+							})
+							.catch(err => {
+								console.log("ERRO ATUALIZANDO TOKEN!", err);
+							});
+						} else {
+							return reject(errorData);
+						}
+					});
+				}
+			},
+			error => {
+				console.log("SERVER SERVICE ERRO!!!", error);
+				return reject(error);
 			}
-		})
-		.catch(err => {
-			console.log("SERVER SERVICE ERRO!!!", err);
-			return reject(err);
-		});
+		);
 	})
 }
 

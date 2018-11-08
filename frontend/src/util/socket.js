@@ -2,7 +2,7 @@ import openSocket from 'socket.io-client';
 let socket;
 
 function openSocketConnection() {
-	socket = openSocket('http://192.168.0.109:8000');
+	socket = openSocket('http://192.168.0.129:8000');
 }
 
 function closeSocketConnection() {

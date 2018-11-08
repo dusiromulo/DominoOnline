@@ -1,10 +1,11 @@
+// eslint-disable-next-line
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import '../css/app.css';
 
 import { profile } from '../util/serverService';
-import { loginUser, logoutUser, profileUser, openSigninOrSignup } from "../actions/app";
+import { profileUser, openSigninOrSignup } from "../actions/app";
 
 
 class App extends Component {

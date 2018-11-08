@@ -20,8 +20,11 @@ module.exports = {
 	createMsg: (req, res, next) => {
 		const message = new Message({string: req.body.message, user: req.user._id});
 		message.save().then(msgModel => {
-			indexIO.emitMessage(msgModel);
-			return res.json({'error': 0});
+			msgModel.populate('user', /*'name',*/ function(err) {
+				console.log('MODEL MSG POPULATE USER', msgModel.user);
+				indexIO.emitMessage(msgModel);
+				return res.json({'error': 0});
+			});
 		});
 	}
 };
