@@ -1,44 +1,47 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import { loginUser, openSigninOrSignup } from "../actions/app";
+import {signin, setUserToken} from '../util/serverService';
+import '../css/form.css';
 
 class Signin extends Component {
 	handleSubmit(e) {
 		e.preventDefault();
 
-		fetch('http://localhost:8000/signin', 
-			{ method: 'post'
-			, headers: {'Content-Type':'application/json'}
-			, body: 
-				JSON.stringify(
-				{ "email": this.email.value
-				, "password": this.password.value })
-		})		
-		.then(res => {
-			return res.json();
-		})	
+		signin(this.email.value, this.password.value)
 		.then(data => {
-			console.log(data);
-			if(data.error)
+			if (data.error) {
 				alert("ERROR: " + data.error);
-			else {
-                sessionStorage.setItem("jwtToken", data.token);
-				alert("Login com sucesso!");
-				this.props.onLogin();
+			} else {
+				setUserToken(data.auth, data.refresh);
+				alert(`Login com sucesso!\n\nBem vindo ${data.user.name}!`);
+				this.props.onUserLoginOrRegister(data.user, data.auth, data.refresh);
 			}
+		})
+		.catch(err => {
+			console.log("ERRO SIGNIN!", err);
 		});		
 	}
 
 	render() {
 		return (
-			<div>
-				<form onSubmit={e => this.handleSubmit(e)}>
-					<input ref={e => this.email = e} autoComplete={'off'} type={'email'} placeholder={'Email'}/>
-					<input ref={e => this.password = e} autoComplete={'off'} type={'password'} placeholder={'Password'}/>
+			<div className='center-vertical'>
+				<form className='center-form' onSubmit={e => this.handleSubmit(e)}>
+					<input ref={e => this.email = e} type='email' placeholder='Email'/>
+					<input ref={e => this.password = e} autoComplete='off' type='password' placeholder='Password'/>
 					<button>Entrar</button>
 				</form>
-				<button onClick = {this.props.onClick}>Registrar</button>
+				<button className='top-right green-bg' onClick={() => this.props.onUserChangePage(false)}>Registrar</button>
 			</div>
 		);
 	}
 }
 
-export default Signin;
+// export default Signin;
+const mapDispatchToProps = dispatch => ({
+	onUserLoginOrRegister: (user, auth, refresh) => dispatch(loginUser(user, auth, refresh)),
+	onUserChangePage: (isSignin) => dispatch(openSigninOrSignup(isSignin))
+});
+
+export default connect(null, mapDispatchToProps)(Signin);

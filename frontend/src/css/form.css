@@ -1,0 +1,6 @@
+form.center-form { width: 50%; margin-left: auto; margin-right: auto; display: flex; flex-direction: column; }
+form > * { margin: 10px; }
+form > input, button { padding: 5px; }
+.center-vertical { display: flex; flex-direction: column; text-align: center; justify-content: center; }
+.top-right { position: fixed; top: 5px; right: 5px; }
+.green-bg { background-color: rgb(130, 255, 130); border: none; padding: 10px; }

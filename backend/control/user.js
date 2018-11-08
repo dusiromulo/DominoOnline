@@ -2,10 +2,11 @@ const jwt = require("jsonwebtoken");
 User = require("../model/user.js");
 const jwtSecret = "T(2am2p]<Zx@(amHi/eP4GQ$x2kM:@z{2t:5z2LW";
 
-generateToken = (user) => {
-    //1. Dont use password and other sensitive fields
-    //2. Use fields that are useful in other parts of the
-    //app/collections/models
+verifyToken = (token, cb) => {
+    jwt.verify(token, jwtSecret, cb);
+}
+
+generateAuthToken = (user) => {
     var u = {
         name: user.name,
         email: user.email,
@@ -17,6 +18,14 @@ generateToken = (user) => {
     });
 };
 
+generateRefreshToken = (user) => {
+    var u = {
+        _id: user._id.toString()
+    };
+
+    return token = jwt.sign(u, jwtSecret);
+};
+
 getCleanUser = (user) => {
     return {
         name: user.name,
@@ -26,16 +35,21 @@ getCleanUser = (user) => {
 };
 
 module.exports = {
-	create : (req, res, next) => {
-		console.log("Create:", req.body);
-		const user = new User(
-			{ name: req.body.name
-			, email: req.body.email
-			, password: req.body.password });
+	create: (req, res, next) => {
+		// console.log("Create user:");
+		const user = new User({ 
+            name: req.body.name, 
+            email: req.body.email, 
+            password: req.body.password 
+        });
 
 		user.save()
 		.then(user => {
-			return res.json({"user": user, "token": generateToken(user)});
+			return res.json({
+                "user": getCleanUser(user),
+                "auth": generateAuthToken(user),
+                "refresh": generateRefreshToken(user)
+            });
 		})
 		.catch(err => {
 			console.log('[ERROR]', err.message);
@@ -43,48 +57,82 @@ module.exports = {
 		});
 	},
 
-	authenticate : (req, res, next) => {
-		console.log("Authenticate:", req.body);
+	authenticate: (req, res, next) => {
+		// console.log("Authenticate user:");
 		User.authenticate(req.body.email, req.body.password, 
 			(err, user) => {
-				if(err)
+				if (err) {
 					return res.json({"error": err.message});
-				else
-				{
-                    return res.json({"user": user, "token": generateToken(user)});
+                } else {
+                    return res.json({
+                        "user": getCleanUser(user),
+                        "auth": generateAuthToken(user),
+                        "refresh": generateRefreshToken(user)
+                    });
 				}
-			} 
+			}
 		);
 	},
 
-	profile : (req, res, next) => {
-        console.log("Profile:", req.body.token);
+	profile: (req, res, next) => {
+        // console.log("Profile user:", req.body.token);
         const token = req.body.token || req.query.token;
         if (!token) {
             return res.status(401).json({message: "Must pass token"});
         }
 
         // Check token that was passed by decoding token using secret
-        jwt.verify(token, jwtSecret,function (err, user) {
-
-            if (err) return res.json({error: err.message});
-
-            //return user using the id from w/in JWTToken
-            User.findOne({
-                "_id": user._id
-            }).then(user => {
-                if (user.length === 0) return res.json({error: "Token invalido!"});
-
-                //Note: you can renew token by creating new token(i.e.
-                //refresh it)w/ new expiration time at this point, but I’m
-                //passing the old token back.
-                // var token = utils.generateToken(user);
-
-                return res.json({
-                    "user": getCleanUser(user), // <--- return both user and token
-                    "token": token
+        verifyToken(token, function (err, user) {
+            if (err && err.name !== 'TokenExpiredError') { // Hacker
+                console.log("HACKER!", err);
+                return res.status(401).json({
+                    success: false,
+                    message: 'hacker1'
                 });
+            } else if (err) { // Token expirado
+                return res.status(403).json({
+                    success: false,
+                    message: 'token_expired'
+                });
+            }
+
+            return res.json({
+                "user": getCleanUser(user),
+                "auth": token
             });
         });
-	}
+	},
+
+    refresh: (req, res, next) => {
+        // console.log("Refresh token user:", req.body.token);
+        const token = req.body.token || req.query.token;
+        if (!token) {
+            return res.status(401).json({message: "Must pass token"});
+        }
+
+        verifyToken(token, function (err, user) {
+            if (err) { // Hacker
+                console.log("HACKER!", err);
+                return res.status(401).json({
+                    success: false,
+                    message: 'hacker2'
+                });
+            }
+            User.findOne({"_id": user._id}).then(userModel => {
+                if (!userModel) {
+                    return res.status(401).json({
+                        success: false,
+                        message: 'hacker3'
+                    });
+                }
+                return res.json({
+                    "user": getCleanUser(userModel),
+                    "auth": generateAuthToken(userModel),
+                    "refresh": generateRefreshToken(userModel)
+                });  
+            })
+        });
+    },
+
+	verifyToken
 };

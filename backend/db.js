@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+mongoose.set('useCreateIndex', true);
 
 module.exports = (cbSucc) => {
 	const dbRoute = "mongodb://localhost:27017/domino";
