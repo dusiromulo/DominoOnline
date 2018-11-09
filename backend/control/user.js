@@ -4,26 +4,26 @@ const jwtSecret = "T(2am2p]<Zx@(amHi/eP4GQ$x2kM:@z{2t:5z2LW";
 
 verifyToken = (token, cb) => {
     jwt.verify(token, jwtSecret, cb);
-}
+};
 
 generateAuthToken = (user) => {
-    var u = {
+    const u = {
         name: user.name,
         email: user.email,
         _id: user._id.toString(),
     };
 
-    return token = jwt.sign(u, jwtSecret, {
+    return jwt.sign(u, jwtSecret, {
         expiresIn: 60 * 60 * 24  // expires in 24 hours
     });
 };
 
 generateRefreshToken = (user) => {
-    var u = {
+    const u = {
         _id: user._id.toString()
     };
 
-    return token = jwt.sign(u, jwtSecret);
+    return jwt.sign(u, jwtSecret);
 };
 
 getCleanUser = (user) => {
@@ -134,5 +134,29 @@ module.exports = {
         });
     },
 
-	verifyToken
+    allowAuthorized: (req, res, next) => {
+        // Verifica se existe um token nos headers
+        let token = req.headers['authorization'];
+        if (!token) return next(); // Se nao existe, continua normalmente a execucao
+
+        token = token.replace('Bearer ', '');
+        verifyToken(token, function (err, user) {
+            if (err && err.name !== 'TokenExpiredError') { // Algum santo tentando hackear
+                console.log("HACKER!", err);
+                return res.status(401).json({
+                    success: false,
+                    message: 'hacker'
+                });
+            } else if (err) { // Token inválido!
+                console.log("TOKEN EXPIRADO!", err);
+                return res.status(403).json({
+                    success: false,
+                    message: 'token_expired'
+                });
+            } else {
+                req.user = user; // Seta o usuario na request, assim basta acessar req.user nas rotas
+                next();
+            }
+        });
+    }
 };

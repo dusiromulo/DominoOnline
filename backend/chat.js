@@ -1,21 +1,19 @@
-// const Message = require('./control/message');
-// const index = require('./index');
-
 class Chat {
-	constructor(socket, io, cbRemove) {
-		this.socket = socket;
+    constructor(io) {
 		this.io = io;
 
-		console.log('a user connected');
-		// Message.create(io);
-		socket.on('disconnect', function(){
-			console.log('user disconnected');
-			cbRemove(this);
-		});
+        io.on('connection', function (socket) {
+            console.log('a user connected');
+            socket.join('lobby');
+
+            socket.on('disconnect', function () {
+                console.log('user disconnected');
+            });
+        });
 	}
 
 	emitMessage(message) {
-		this.io.emit('message', message);
+        this.io.sockets.in('lobby').emit('message', message);
 	}
 }
 

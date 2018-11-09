@@ -1,6 +1,6 @@
 let userAuthToken;
 let userRefreshToken;
-const API_URL = 'http://192.168.0.129:8000/';
+const API_URL = 'http://192.168.0.101:8000/';
 
 function refreshToken() {
 	return new Promise((resolve, reject) => {

@@ -1,5 +1,4 @@
 const Message = require('../model/message');
-const indexIO = require('../index');
 
 module.exports = {
 	getMsgs: (req, res, next) => {
@@ -22,8 +21,9 @@ module.exports = {
 		message.save().then(msgModel => {
 			msgModel.populate('user', /*'name',*/ function(err) {
 				console.log('MODEL MSG POPULATE USER', msgModel.user);
-				indexIO.emitMessage(msgModel);
-				return res.json({'error': 0});
+                req.msgModel = msgModel;
+                res.json({'error': 0});
+                next();
 			});
 		});
 	}
